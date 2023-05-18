@@ -6,6 +6,30 @@
 
 <body style="margin: 0px;">
 	<script>
+		let config = {
+			fps: 30,
+			minSpeed: 0.25,
+			maxSpeed: 0.75,
+			circleMin: 5,
+			circleMax: 35,
+			circleCount: 500,
+			minR: 0,
+			maxR: 255,
+			minG: 0,
+			maxG: 255,
+			minB: 250,
+			maxB: 255
+		}
+
+		window.wallpaperPropertyListener = {
+			applyUserProperties: properties => {
+				config = {...config,...properties}
+			},
+			applyGeneralProperties: properties => {
+				config = {...config,...properties}
+			}
+		}
+
 		const randomBetween = (a,b) => a + Math.random()*(b-a)
 
 		const audioChannels = 128
@@ -14,35 +38,17 @@
 		const app = new PIXI.Application({ width, height, antialias: true });
 		document.body.appendChild(app.view);
 
-		let minSpeed = 0.25
-		let maxSpeed = 0.75
-		let circleMin = 5
-		let circleMax = 35
-		let circleCount = 500
-		const circles = []
-
-		let minR = 0
-		let maxR = 255
-		let minG = 0
-		let maxG = 255
-		let minB = 0
-		let maxB = 255
-
-		window.wallpaperPropertyListener = {
-			applyUserProperties: (properties) => {
-				if (!isNaN(properties.minSpeed)) {minSpeed = properties.minSpeed}
-			},
-		}
-
 		const screen = new PIXI.Graphics()
 		app.stage.addChild(screen)
 
-		for (let i = 0; i < circleCount; i++) {
+		const circles = []
+
+		for (let i = 0; i < config.circleCount; i++) {
 			const circle = new PIXI.Graphics()
 			circle.beginFill('rgba(255,255,255,0.75)')
-			const initialR = randomBetween(circleMin,circleMax)
+			const initialR = randomBetween(config.circleMin,config.circleMax)
 			circle.drawCircle(0, 0, initialR)
-			const speed = randomBetween(minSpeed,maxSpeed)
+			const speed = randomBetween(config.minSpeed,config.maxSpeed)
 			const initialAngle = Math.random() * 2 * Math.PI
 			const velocity = [Math.cos(initialAngle) * speed, Math.sin(initialAngle) * speed]
 			circles.push({ circle, velocity })
@@ -52,16 +58,13 @@
 		circles.forEach(({ circle }) => {
 			circle.x = Math.random() * width
 			circle.y = Math.random() * height
-			const [r, g, b] = [randomBetween(minR,maxR), randomBetween(minG,maxG), randomBetween(minB,maxB)]
+			const [r, g, b] = [randomBetween(config.minR,config.maxR), randomBetween(config.minG,config.maxG), randomBetween(config.minB,config.maxB)]
 			circle.tint = `rgb(${r},${g},${b})`
 		})
 
 		let audio = new Array(audioChannels).fill(0)
 
-		let elapsed = 0.0;
 		app.ticker.add((delta) => {
-			elapsed += delta;
-
 			circles.forEach(({ circle, velocity }, index) => {
 
 				const audioBoost = 1 + audio[index%audioChannels]
@@ -78,7 +81,7 @@
 				circle.x = circle.x + dx * delta * audioBoost
 				circle.y = circle.y + dy * delta * audioBoost
 			})
-		});
+		})
 		const wallpaperAudioListener = a => {audio = a.map(v=>Math.max(v,1))}
 		window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
 	</script>
