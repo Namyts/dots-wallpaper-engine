@@ -6,18 +6,33 @@
 
 <body style="margin: 0px;">
 	<script>
+		const randomBetween = (a,b) => a + Math.random()*(b-a)
+
+		const audioChannels = 128
 		const width = window.innerWidth
 		const height = window.innerHeight
 		const app = new PIXI.Application({ width, height, antialias: true });
 		document.body.appendChild(app.view);
 
-		const minSpeed = 0.25
-		const maxSpeed = 0.75
-		const circleMin = 5
-		const circleMax = 35
-		const circleCount = 500
+		let minSpeed = 0.25
+		let maxSpeed = 0.75
+		let circleMin = 5
+		let circleMax = 35
+		let circleCount = 500
 		const circles = []
 
+		let minR = 0
+		let maxR = 255
+		let minG = 0
+		let maxG = 255
+		let minB = 0
+		let maxB = 255
+
+		window.wallpaperPropertyListener = {
+			applyUserProperties: (properties) => {
+				if (!isNaN(properties.minSpeed)) {minSpeed = properties.minSpeed}
+			},
+		}
 
 		const screen = new PIXI.Graphics()
 		app.stage.addChild(screen)
@@ -25,9 +40,9 @@
 		for (let i = 0; i < circleCount; i++) {
 			const circle = new PIXI.Graphics()
 			circle.beginFill('rgba(255,255,255,0.75)')
-			const initialR = circleMin + Math.random() * (circleMax - circleMin)
+			const initialR = randomBetween(circleMin,circleMax)
 			circle.drawCircle(0, 0, initialR)
-			const speed = minSpeed + Math.random() * (maxSpeed - minSpeed)
+			const speed = randomBetween(minSpeed,maxSpeed)
 			const initialAngle = Math.random() * 2 * Math.PI
 			const velocity = [Math.cos(initialAngle) * speed, Math.sin(initialAngle) * speed]
 			circles.push({ circle, velocity })
@@ -37,18 +52,19 @@
 		circles.forEach(({ circle }) => {
 			circle.x = Math.random() * width
 			circle.y = Math.random() * height
-			const [r, g, b] = [Math.random() * 255, Math.random() * 255, Math.random() * 255]
+			const [r, g, b] = [randomBetween(minR,maxR), randomBetween(minG,maxG), randomBetween(minB,maxB)]
 			circle.tint = `rgb(${r},${g},${b})`
 		})
+
+		let audio = new Array(audioChannels).fill(0)
 
 		let elapsed = 0.0;
 		app.ticker.add((delta) => {
 			elapsed += delta;
 
-			const newScale = 1 + Math.random() * (2 - 1)
-
 			circles.forEach(({ circle, velocity }, index) => {
-				// if(circle.x===-1 && circle.y===-1){circle.x = Math.random()*width}
+
+				const audioBoost = 1 + audio[index%audioChannels]
 
 				let [dx, dy] = velocity
 				if (circle.x > width || circle.x < 0) {
@@ -59,11 +75,12 @@
 					dy = dy * -1
 					circles[index].velocity[1] = dy
 				}
-				circle.x = circle.x + dx * delta
-				circle.y = circle.y + dy * delta
-				// circle.scale.set(newScale)
+				circle.x = circle.x + dx * delta * audioBoost
+				circle.y = circle.y + dy * delta * audioBoost
 			})
 		});
+		const wallpaperAudioListener = a => {audio = a.map(v=>Math.max(v,1))}
+		window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
 	</script>
 </body>
 
