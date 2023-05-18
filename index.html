@@ -1,0 +1,70 @@
+<html>
+
+<head>
+	<script src="https://pixijs.download/release/pixi.min.js"></script>
+</head>
+
+<body style="margin: 0px;">
+	<script>
+		const width = window.innerWidth
+		const height = window.innerHeight
+		const app = new PIXI.Application({ width, height, antialias: true });
+		document.body.appendChild(app.view);
+
+		const minSpeed = 0.25
+		const maxSpeed = 0.75
+		const circleMin = 5
+		const circleMax = 35
+		const circleCount = 500
+		const circles = []
+
+
+		const screen = new PIXI.Graphics()
+		app.stage.addChild(screen)
+
+		for (let i = 0; i < circleCount; i++) {
+			const circle = new PIXI.Graphics()
+			circle.beginFill('rgba(255,255,255,0.75)')
+			const initialR = circleMin + Math.random() * (circleMax - circleMin)
+			circle.drawCircle(0, 0, initialR)
+			const speed = minSpeed + Math.random() * (maxSpeed - minSpeed)
+			const initialAngle = Math.random() * 2 * Math.PI
+			const velocity = [Math.cos(initialAngle) * speed, Math.sin(initialAngle) * speed]
+			circles.push({ circle, velocity })
+			screen.addChild(circle);
+		}
+
+		circles.forEach(({ circle }) => {
+			circle.x = Math.random() * width
+			circle.y = Math.random() * height
+			const [r, g, b] = [Math.random() * 255, Math.random() * 255, Math.random() * 255]
+			circle.tint = `rgb(${r},${g},${b})`
+		})
+
+		let elapsed = 0.0;
+		app.ticker.add((delta) => {
+			elapsed += delta;
+
+			const newScale = 1 + Math.random() * (2 - 1)
+
+			circles.forEach(({ circle, velocity }, index) => {
+				// if(circle.x===-1 && circle.y===-1){circle.x = Math.random()*width}
+
+				let [dx, dy] = velocity
+				if (circle.x > width || circle.x < 0) {
+					dx = dx * -1
+					circles[index].velocity[0] = dx
+				}
+				if (circle.y > height || circle.y < 0) {
+					dy = dy * -1
+					circles[index].velocity[1] = dy
+				}
+				circle.x = circle.x + dx * delta
+				circle.y = circle.y + dy * delta
+				// circle.scale.set(newScale)
+			})
+		});
+	</script>
+</body>
+
+</html>
