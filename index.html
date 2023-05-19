@@ -5,85 +5,120 @@
 </head>
 
 <body style="margin: 0px;">
+	<div id="app"></div>
 	<script>
 		let config = {
-			fps: 30,
+			antialias: true,
+			fps: 120,
 			minSpeed: 0.25,
 			maxSpeed: 0.75,
-			circleMin: 5,
+			circleMin: 4,
 			circleMax: 35,
-			circleCount: 500,
+			circlesPer100px: 4,
 			minR: 0,
 			maxR: 255,
 			minG: 0,
 			maxG: 255,
-			minB: 250,
-			maxB: 255
+			minB: 0,
+			maxB: 255,
+			audioSizeBoost: 4,
+			audioSpeedBoost: 100,
+			audioSpeedBoostWidth: 24,
+			maxBoostSize: 50,
+			maxBoostSpeed: 100,
+			equalise: 0.4
+		}
+
+		let app = null
+		const restartApplication = () => {
+			app && app.destroy(true,true)
+			runApplication()
 		}
 
 		window.wallpaperPropertyListener = {
 			applyUserProperties: properties => {
-				config = {...config,...properties}
+				config = {...config,...Object.fromEntries(Object.entries(properties).map(([p,v])=>[p,v.value]))}
+				restartApplication()
 			},
 			applyGeneralProperties: properties => {
-				config = {...config,...properties}
+				const {fps, msaa} = properties
+				config = {...config, fps: fps.value, antialias: msaa && msaa!=="none"}
+				restartApplication()
 			}
 		}
 
-		const randomBetween = (a,b) => a + Math.random()*(b-a)
+		const runApplication = () => {
+			const audioChannels = 128
+			const width = window.innerWidth
+			const height = window.innerHeight
+			app = new PIXI.Application({ width, height, antialias: config.antialias });
+			document.getElementById("app").appendChild(app.view);
 
-		const audioChannels = 128
-		const width = window.innerWidth
-		const height = window.innerHeight
-		const app = new PIXI.Application({ width, height, antialias: true });
-		document.body.appendChild(app.view);
+			const screen = new PIXI.Graphics()
+			app.stage.addChild(screen)
 
-		const screen = new PIXI.Graphics()
-		app.stage.addChild(screen)
+			const circles = []
+			const numberOfCircles = Math.floor(config.circlesPer100px*(width*height)/10000)
 
-		const circles = []
+			const randomBetween = (a,b) => a + Math.random()*(b-a)
 
-		for (let i = 0; i < config.circleCount; i++) {
-			const circle = new PIXI.Graphics()
-			circle.beginFill('rgba(255,255,255,0.75)')
-			const initialR = randomBetween(config.circleMin,config.circleMax)
-			circle.drawCircle(0, 0, initialR)
-			const speed = randomBetween(config.minSpeed,config.maxSpeed)
-			const initialAngle = Math.random() * 2 * Math.PI
-			const velocity = [Math.cos(initialAngle) * speed, Math.sin(initialAngle) * speed]
-			circles.push({ circle, velocity })
-			screen.addChild(circle);
-		}
+			for (let i = 0; i < numberOfCircles; i++) {
+				const circle = new PIXI.Graphics()
+				circle.beginFill('rgba(255,255,255,0.75)')
+				const initialR = randomBetween(config.circleMin,config.circleMax)
+				circle.drawCircle(0, 0, initialR)
+				const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
+				const initialAngle = Math.random() * 2 * Math.PI
+				const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
+				circles.push({ circle, velocity, initialR, initialSpeed })
+				screen.addChild(circle);
+			}
 
-		circles.forEach(({ circle }) => {
-			circle.x = Math.random() * width
-			circle.y = Math.random() * height
-			const [r, g, b] = [randomBetween(config.minR,config.maxR), randomBetween(config.minG,config.maxG), randomBetween(config.minB,config.maxB)]
-			circle.tint = `rgb(${r},${g},${b})`
-		})
-
-		let audio = new Array(audioChannels).fill(0)
-
-		app.ticker.add((delta) => {
-			circles.forEach(({ circle, velocity }, index) => {
-
-				const audioBoost = 1 + audio[index%audioChannels]
-
-				let [dx, dy] = velocity
-				if (circle.x > width || circle.x < 0) {
-					dx = dx * -1
-					circles[index].velocity[0] = dx
-				}
-				if (circle.y > height || circle.y < 0) {
-					dy = dy * -1
-					circles[index].velocity[1] = dy
-				}
-				circle.x = circle.x + dx * delta * audioBoost
-				circle.y = circle.y + dy * delta * audioBoost
+			circles.forEach(({ circle }) => {
+				circle.x = Math.random() * width
+				circle.y = Math.random() * height
+				const [r, g, b] = [randomBetween(config.minR,config.maxR), randomBetween(config.minG,config.maxG), randomBetween(config.minB,config.maxB)]
+				circle.tint = `rgb(${r},${g},${b})`
 			})
-		})
-		const wallpaperAudioListener = a => {audio = a.map(v=>Math.max(v,1))}
-		window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
+
+			let audio = new Array(audioChannels).fill(0)
+
+			app.ticker.maxFPS = config.fps
+			app.ticker.add((delta) => {
+				const audioSpeedBoost = Math.max(1,(audio.slice(1,config.audioSpeedBoostWidth).reduce((t,a)=>t+a,0)/config.audioSpeedBoostWidth)*config.audioSpeedBoost)
+				circles.forEach(({ circle, velocity, initialR, initialSpeed }, index) => {
+					//size changes
+					const audioSizeBoost = Math.max(1,audio[index%audioChannels]*config.audioSizeBoost)
+					const currentR = circle.scale.x
+					const targetR = Math.min(config.maxBoostSize/initialR, currentR + (audioSizeBoost-currentR)*config.equalise)
+					circle.scale.set(targetR,targetR)
+
+					//position changes
+					let [dx, dy] = velocity
+					if (circle.x > width || circle.x < 0) {
+						dx = dx * -1
+						circles[index].velocity[0] = dx
+					}
+					if (circle.y > height || circle.y < 0) {
+						dy = dy * -1
+						circles[index].velocity[1] = dy
+					}
+
+					const currentDx = dx * delta
+					const currentDy = dy * delta
+					const targetDx = currentDx * audioSpeedBoost
+					const targetDy = currentDy * audioSpeedBoost
+
+					circle.x = circle.x + Math.sign(targetDx)*Math.min(config.maxBoostSpeed,Math.abs(targetDx))
+					circle.y = circle.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
+				})
+			})
+			const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v,1))}
+			window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
+		}
+		if(!app){restartApplication()}
+		window.onresize = () => {restartApplication()}
+		
 	</script>
 </body>
 

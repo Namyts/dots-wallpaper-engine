@@ -1,0 +1,216 @@
+{
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+			"audioSizeBoost" : 
+			{
+				"fraction" : false,
+				"index" : 11,
+				"max" : 20,
+				"min" : 0,
+				"order" : 111,
+				"text" : "audioSizeBoost",
+				"type" : "slider",
+				"value" : 4
+			},
+			"audioSpeedBoost" : 
+			{
+				"fraction" : false,
+				"index" : 12,
+				"max" : 1000,
+				"min" : 0,
+				"order" : 112,
+				"text" : "audioSpeedBoost",
+				"type" : "slider",
+				"value" : 100
+			},
+			"audioSpeedBoostWidth" : 
+			{
+				"fraction" : false,
+				"index" : 13,
+				"max" : 128,
+				"min" : 1,
+				"order" : 113,
+				"text" : "audioSpeedBoostWidth",
+				"type" : "slider",
+				"value" : 24
+			},
+			"circleMax" : 
+			{
+				"fraction" : false,
+				"index" : 3,
+				"max" : 150,
+				"min" : 1,
+				"order" : 103,
+				"text" : "circleMax",
+				"type" : "slider",
+				"value" : 35
+			},
+			"circleMin" : 
+			{
+				"fraction" : false,
+				"index" : 2,
+				"max" : 150,
+				"min" : 1,
+				"order" : 102,
+				"text" : "circleMin",
+				"type" : "slider",
+				"value" : 5
+			},
+			"circlesPer100px" : 
+			{
+				"fraction" : false,
+				"index" : 4,
+				"max" : 10,
+				"min" : 0,
+				"order" : 104,
+				"text" : "circlesPer100px",
+				"type" : "slider",
+				"value" : 4
+			},
+			"equalise" : 
+			{
+				"fraction" : true,
+				"index" : 16,
+				"max" : 1,
+				"min" : 0,
+				"order" : 116,
+				"precision" : 3,
+				"step" : 0.01,
+				"text" : "equalise",
+				"type" : "slider",
+				"value" : 0.5
+			},
+			"maxB" : 
+			{
+				"fraction" : false,
+				"index" : 10,
+				"max" : 255,
+				"min" : 0,
+				"order" : 110,
+				"text" : "maxB",
+				"type" : "slider",
+				"value" : 255
+			},
+			"maxBoostSize" : 
+			{
+				"fraction" : false,
+				"index" : 14,
+				"max" : 250,
+				"min" : 1,
+				"order" : 114,
+				"text" : "maxBoostSize",
+				"type" : "slider",
+				"value" : 50
+			},
+			"maxBoostSpeed" : 
+			{
+				"fraction" : false,
+				"index" : 15,
+				"max" : 1000,
+				"min" : 0,
+				"order" : 115,
+				"text" : "maxBoostSpeed",
+				"type" : "slider",
+				"value" : 100
+			},
+			"maxG" : 
+			{
+				"fraction" : false,
+				"index" : 8,
+				"max" : 255,
+				"min" : 0,
+				"order" : 108,
+				"text" : "maxG",
+				"type" : "slider",
+				"value" : 255
+			},
+			"maxR" : 
+			{
+				"fraction" : false,
+				"index" : 6,
+				"max" : 255,
+				"min" : 0,
+				"order" : 106,
+				"text" : "maxR",
+				"type" : "slider",
+				"value" : 255
+			},
+			"maxSpeed" : 
+			{
+				"fraction" : true,
+				"index" : 1,
+				"max" : 2,
+				"min" : 0,
+				"order" : 101,
+				"precision" : 3,
+				"step" : 0.01,
+				"text" : "maxSpeed",
+				"type" : "slider",
+				"value" : 0.75
+			},
+			"minB" : 
+			{
+				"fraction" : false,
+				"index" : 9,
+				"max" : 255,
+				"min" : 0,
+				"order" : 109,
+				"text" : "minB",
+				"type" : "slider",
+				"value" : 0
+			},
+			"minG" : 
+			{
+				"fraction" : false,
+				"index" : 7,
+				"max" : 255,
+				"min" : 0,
+				"order" : 107,
+				"text" : "minG",
+				"type" : "slider",
+				"value" : 0
+			},
+			"minR" : 
+			{
+				"fraction" : false,
+				"index" : 5,
+				"max" : 255,
+				"min" : 0,
+				"order" : 105,
+				"text" : "minR",
+				"type" : "slider",
+				"value" : 0
+			},
+			"minSpeed" : 
+			{
+				"fraction" : true,
+				"index" : 0,
+				"max" : 2,
+				"min" : 0,
+				"order" : 100,
+				"precision" : 3,
+				"step" : 0.01,
+				"text" : "minSpeed",
+				"type" : "slider",
+				"value" : 0.25
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			}
+		},
+		"supportsaudioprocessing" : true
+	},
+	"preview" : "preview.gif",
+	"snapshotformat" : 0,
+	"snapshotoverlay" : "",
+	"title" : "Musical Dots",
+	"type" : "web",
+	"version" : 0
+}
