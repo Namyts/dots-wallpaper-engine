@@ -91,7 +91,6 @@
 					const audioSizeBoost = Math.max(1,audio[index%audioChannels]*config.audioSizeBoost)
 					const currentR = circle.scale.x
 					const targetR = Math.min(config.maxBoostSize/initialR, currentR + (audioSizeBoost-currentR)*config.equalise)
-					circle.scale.set(targetR,targetR)
 
 					//position changes
 					let [dx, dy] = velocity
@@ -109,8 +108,10 @@
 					const targetDx = currentDx * audioSpeedBoost
 					const targetDy = currentDy * audioSpeedBoost
 
-					circle.x = circle.x + Math.sign(targetDx)*Math.min(config.maxBoostSpeed,Math.abs(targetDx))
-					circle.y = circle.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
+					const x = circle.x + Math.sign(targetDx)*Math.min(config.maxBoostSpeed,Math.abs(targetDx))
+					const y = circle.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
+
+					circle.setTransform(x,y,targetR,targetR)
 				})
 			})
 			const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v,1))}
