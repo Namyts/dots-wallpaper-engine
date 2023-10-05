@@ -1,4 +1,6 @@
 {
+	"contentrating" : "Everyone",
+	"description" : "A collection of small dots which move and expand to the beat of your music. You can adjust the colours, speed, and size.\n\nVery similar to another wallpaper for WallpaperEngine, but I recoded it from scratch to make it slightly more efficient (although it doesn't have all of the same features, just the ones which I use personally)\n\nhttps://github.com/Namyts/dots-wallpaper-engine.git\n\nUpdated - Reduced CPU usage even further, and moved some computation to GPU instead.",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -208,9 +210,14 @@
 		"supportsaudioprocessing" : true
 	},
 	"preview" : "preview.gif",
+	"ratingsex" : "none",
+	"ratingviolence" : "none",
 	"snapshotformat" : 0,
 	"snapshotoverlay" : "",
+	"tags" : [ "Music" ],
 	"title" : "Musical Dots",
 	"type" : "web",
-	"version" : 0
+	"version" : 2,
+	"workshopid" : "2977794493",
+	"workshopurl" : "steam://url/CommunityFilePage/2977794493"
 }
