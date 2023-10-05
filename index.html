@@ -32,11 +32,16 @@
 
 		let app = null
 		const restartApplication = () => {
-			console.log(app)
-			app && (delete app)
-			runApplication()
+			if(app){
+				app.destroy(true,true)
+				app = null
+				runApplication()
+			} else {
+				runApplication()
+			}			
 		}
 
+		window.onresize = () => {app && app.resize()}
 		window.wallpaperPropertyListener = {
 			applyUserProperties: properties => {
 				config = {...config,...Object.fromEntries(Object.entries(properties).map(([p,v])=>[p,v.value]))}
@@ -51,15 +56,12 @@
 
 		const runApplication = () => {
 			const audioChannels = 128
-			const width = window.innerWidth
-			const height = window.innerHeight
 			app = new PIXI.Application();
-			app.init({ resizeTo: window, antialias: config.antialias, background: '#eb4034' }).then(()=>{
-				
-				document.getElementById("app").appendChild(app.canvas);
-
+			app.init({ resizeTo: window, antialias: config.antialias, background: '#000000' })
+			.then(()=>{
+				document.getElementById("app").appendChild(app.canvas)
 				const circles = []
-				const numberOfCircles = Math.floor(config.circlesPer100px*(width*height)/10000)
+				const numberOfCircles = Math.floor(config.circlesPer100px*(app.renderer.width*app.renderer.height)/10000)
 
 				const randomIntBetween = (a,b) => Math.ceil(randomBetween(a,b))
 				const randomBetween = (a,b) => a + Math.random()*(b-a)
@@ -68,19 +70,19 @@
 					const initialColour = '#ffffffbf'
 					const initialR = randomBetween(config.circleMin,config.circleMax)
 					const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
-					const initialAngle = Math.random() * 2 * Math.PI
+					const initialAngle = randomBetween(0,2*Math.PI)
 					const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
 					
 					const circle = new PIXI.Graphics()
-					circle.context.circle(0,0,initialR).fill(initialColour)
+					circle.circle(0,0,initialR).fill(initialColour)
 
 					circles.push({ circle, velocity, initialR, initialSpeed })
 					app.stage.addChild(circle);
 				}
 
 				circles.forEach(({ circle }) => {
-					circle.x = Math.random() * width
-					circle.y = Math.random() * height
+					circle.x = randomIntBetween(0,app.renderer.width)
+					circle.y = randomIntBetween(0,app.renderer.height)
 					const [r,g,b] = [
 						randomIntBetween(config.minR,config.maxR),
 						randomIntBetween(config.minG,config.maxG),
@@ -91,10 +93,11 @@
 
 				let audio = new Array(audioChannels).fill(0)
 
-				console.log(circles)
 				app.ticker.maxFPS = config.fps
+
 				app.ticker.add((ticker) => {
 					const delta = ticker.deltaTime
+
 					const audioSpeedBoost = Math.max(1,(audio.slice(1,config.audioSpeedBoostWidth).reduce((t,a)=>t+a,0)/config.audioSpeedBoostWidth)*config.audioSpeedBoost)
 					circles.forEach(({ circle, velocity, initialR, initialSpeed }, index) => {
 						//size changes
@@ -104,11 +107,11 @@
 
 						//position changes
 						let [dx, dy] = velocity
-						if (circle.x > width || circle.x < 0) {
+						if (circle.x > app.renderer.width || circle.x < 0) {
 							dx = dx * -1
 							circles[index].velocity[0] = dx
 						}
-						if (circle.y > height || circle.y < 0) {
+						if (circle.y > app.renderer.height || circle.y < 0) {
 							dy = dy * -1
 							circles[index].velocity[1] = dy
 						}
@@ -121,18 +124,18 @@
 						const x = circle.x + Math.sign(targetDx)*Math.min(config.maxBoostSpeed,Math.abs(targetDx))
 						const y = circle.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
 
-						// circle.uid === 5 && console.log(circle)
-						circle.context.setTransform(x,y,targetR,targetR)
+						//set values - targetR adjustment is made to keep circles in bounds, but still bounce by flipping velocity
+						circle.x = Math.min(Math.max(x,0-targetR),app.renderer.width+targetR)
+						circle.y = Math.min(Math.max(y,0-targetR),app.renderer.height+targetR)
+						circle.scale.set(targetR)
 					})
 				})
 				const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v,1))}
 				window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
 			})
-			
 		}
-		if(!app){restartApplication()}
-		window.onresize = () => {restartApplication()}
-		
+
+		runApplication()
 	</script>
 </body>
 
