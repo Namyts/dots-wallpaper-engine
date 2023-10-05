@@ -1,8 +1,7 @@
 <html>
 
 <head>
-	<script src="https://pixijs.download/v8.0.0-beta.3/pixi.js"></script>
-	<script src="https://unpkg.com/tinycolor2/tinycolor.js"></script>
+	<script src="https://pixijs.download/v8.0.0-beta.3/pixi.min.js"></script>
 </head>
 
 <body style="margin: 0px;">
@@ -87,7 +86,7 @@
 						randomIntBetween(config.minG,config.maxG),
 						randomIntBetween(config.minB,config.maxB)
 					]
-					circle.tint = tinycolor({r,g,b}).toHex8String()
+					circle.tint = `rgb(${r},${g},${b})`
 				})
 
 				let audio = new Array(audioChannels).fill(0)
