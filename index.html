@@ -67,14 +67,13 @@
 				const randomBetween = (a,b) => a + Math.random()*(b-a)
 
 				for (let i = 0; i < numberOfCircles; i++) {
-					const initialColour = '#ffffffbf'
 					const initialR = randomBetween(config.circleMin,config.circleMax)
 					const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
 					const initialAngle = randomBetween(0,2*Math.PI)
 					const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
 					
 					const circle = new PIXI.Graphics()
-					circle.circle(0,0,initialR).fill(initialColour)
+					circle.circle(0,0,initialR).fill({color: "white", alpha: 0.75})
 
 					circles.push({ circle, velocity, initialR, initialSpeed })
 					app.stage.addChild(circle);
