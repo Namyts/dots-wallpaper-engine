@@ -6,16 +6,18 @@
 	{
 		"properties" : 
 		{
-			"audioSizeBoost" : 
+			"audioSensitivity" : 
 			{
-				"fraction" : false,
+				"fraction" : true,
 				"index" : 11,
-				"max" : 20,
-				"min" : 0,
+				"max" : 10,
+				"min" : 1,
 				"order" : 113,
-				"text" : "audioSizeBoost",
+				"precision" : 3,
+				"step" : 0.1,
+				"text" : "audioSensitivity",
 				"type" : "slider",
-				"value" : 15
+				"value" : 1
 			},
 			"audioSpeedBoost" : 
 			{
@@ -26,16 +28,16 @@
 				"order" : 114,
 				"text" : "audioSpeedBoost",
 				"type" : "slider",
-				"value" : 100
+				"value" : 600
 			},
-			"audioSpeedBoostWidth" : 
+			"averagedAudioChannelWidth" : 
 			{
 				"fraction" : false,
 				"index" : 13,
 				"max" : 128,
 				"min" : 1,
 				"order" : 115,
-				"text" : "audioSpeedBoostWidth",
+				"text" : "averagedAudioChannelWidth",
 				"type" : "slider",
 				"value" : 24
 			},
@@ -46,7 +48,7 @@
 				"order" : 112,
 				"text" : "colourChangeOnWallHit",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"shape" : 
 			{
@@ -100,7 +102,7 @@
 				"step" : 0.01,
 				"text" : "equalise",
 				"type" : "slider",
-				"value" : 0.5
+				"value" : 0.33
 			},
 			"maxB" : 
 			{
@@ -117,23 +119,23 @@
 			{
 				"fraction" : false,
 				"index" : 14,
-				"max" : 250,
+				"max" : 50,
 				"min" : 1,
 				"order" : 116,
 				"text" : "maxBoostScale",
 				"type" : "slider",
-				"value" : 50
+				"value" : 14
 			},
 			"maxBoostSpeed" : 
 			{
 				"fraction" : false,
 				"index" : 15,
-				"max" : 1000,
+				"max" : 20,
 				"min" : 0,
 				"order" : 117,
 				"text" : "maxBoostSpeed",
 				"type" : "slider",
-				"value" : 100
+				"value" : 8
 			},
 			"maxG" : 
 			{
@@ -174,7 +176,7 @@
 			{
 				"fraction" : false,
 				"index" : 2,
-				"max" : 10000,
+				"max" : 50000,
 				"min" : 1,
 				"order" : 105,
 				"text" : "maxTotalShapes",

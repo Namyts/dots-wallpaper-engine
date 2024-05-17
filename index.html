@@ -31,12 +31,11 @@
 			minB: 0,
 			maxB: 255,
 			colourChangeOnWallHit: false,
-			audioSizeBoost: 15,
-			audioSpeedBoost: 100,
-			audioSpeedBoostWidth: 24,
-			maxBoostScale: 5,
-			maxBoostSpeed: 100,
-			equalise: 0.4
+			maxBoostScale: 14,
+			maxBoostSpeed: 10,
+			equalise: 0.4,
+			averagedAudioChannelWidth: 24,
+			audioSensitivity: 1
 		}
 
 		let app = null
@@ -62,7 +61,8 @@
 				restartApplication()
 			}
 		}
-
+		const percentBetween = (i, max, percent) => (i + percent*(max-i))/i
+		const lerp = (c, t, eq) => c + (t-c)*eq
 		const randomIntBetween = (a,b) => Math.ceil(randomBetween(a,b))
 		const randomBetween = (a,b) => a + Math.random()*(b-a)
 
@@ -75,21 +75,20 @@
 			shape.tint = `rgb(${r},${g},${b})`
 		}
 
-		const drawShapeAndGetBoundary = (shapeType) => {
-			const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
+		const drawShapeAndGetBoundary = (shapeType, scale) => {
+			// returns the shape, and the top-left, and bottom-right co-ordinates for collisions
 			const g = new PIXI.Graphics()
 			switch(shapeType){
 				case "dvd": { return [ g.svg(window.dvd), [0,0], [500,300] ] }
 				case "square": {
-					const s = 8*initialScale
-					return [ g.rect(-s/2,-s/2,s,s), [-s/2,-s/2], [s/2,s/2] ]
+					const s = 4*scale
+					return [ g.rect(-s,-s,2*s,2*s), [-s,-s], [s,s] ]
 				}
 				default: { 
-					const r = 4*initialScale
+					const r = 4*scale
 					return [ g.circle(0, 0, r), [-r,-r], [r,r] ]
 				}
 			}
-			// returns the shape, and the top-left, and bottom-right co-ordinates for collisions
 		}
 
 		const runApplication = () => {
@@ -104,40 +103,41 @@
 				const numberOfShapes = Math.min(config.maxTotalShapes, Math.floor(config.shapesPer100px*(app.renderer.width*app.renderer.height)/10000))
 
 				for (let i = 0; i < numberOfShapes; i++) {
+					const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
 					const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
 					const initialAngle = randomBetween(0,2*Math.PI)
 					const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
 					
-					let [shape, tl, br] = drawShapeAndGetBoundary(config.shape)
+					let [shape, tl, br] = drawShapeAndGetBoundary(config.shape, initialScale)
 
 					shape.fill({color: "white", alpha: 0.75})
 					chooseRandomColour(shape)
 					shape.x = randomIntBetween(-tl[0], app.renderer.width - br[0])
 					shape.y = randomIntBetween(-tl[1], app.renderer.height - br[1])
 
-					shapes.push({ shape, velocity, tl, br })
+					shapes.push({ shape, velocity, initialScale, initialSpeed, tl, br })
 					app.stage.addChild(shape);
 				}
 				app.ticker.maxFPS = config.fps
 				app.ticker.add((ticker) => {
 					const delta = ticker.deltaTime
-					const audioSpeedBoost = Math.max(1,(audio.slice(1,config.audioSpeedBoostWidth).reduce((t,a)=>t+a,0)/config.audioSpeedBoostWidth)*config.audioSpeedBoost)
+					const averagedAudioMultiplier = audio.slice(1,config.averagedAudioChannelWidth).reduce((t,a)=>t+a,0)/config.averagedAudioChannelWidth
 
-					shapes.forEach(({ shape, velocity, tl, br }, index) => {
+					shapes.forEach(({ shape, velocity, initialScale, initialSpeed, tl, br }, index) => {
 						//size changes
-						const audioSizeBoost = Math.max(1,audio[index%audio.length]*config.audioSizeBoost)
-						const currentScale = shape.scale.x
-						const targetScale = Math.min(config.maxBoostScale, currentScale + (audioSizeBoost-currentScale)*config.equalise)
+						const audioMultiplier = audio[index%audio.length] //percentage to increase towards max size
+						const targetScale = percentBetween(initialScale, config.maxBoostScale, audioMultiplier)
+						const nextScale = Math.min(config.maxBoostScale/initialScale, lerp(shape.scale.x, targetScale, config.equalise))
 
 						let bounces = 0
 						//position changes
 						let [dx, dy] = velocity
-						if (shape.x + (br[0] * targetScale) >= app.renderer.width || shape.x + (tl[0] * targetScale) <= 0) {
+						if (shape.x + (br[0] * nextScale) >= app.renderer.width || shape.x + (tl[0] * nextScale) <= 0) {
 							bounces += 1
 							dx = dx * -1
 							shapes[index].velocity[0] = dx
 						}
-						if (shape.y + (br[1] * targetScale) >= app.renderer.height || shape.y + (tl[1] * targetScale) <= 0) {
+						if (shape.y + (br[1] * nextScale) >= app.renderer.height || shape.y + (tl[1] * nextScale) <= 0) {
 							bounces += 1
 							dy = dy * -1
 							shapes[index].velocity[1] = dy
@@ -153,23 +153,23 @@
 
 						const currentDx = dx * delta
 						const currentDy = dy * delta
-						const targetDx = currentDx * audioSpeedBoost
-						const targetDy = currentDy * audioSpeedBoost
+						const speedMultiplier = percentBetween(initialSpeed, config.maxBoostSpeed, averagedAudioMultiplier)
+						const targetDx = currentDx * speedMultiplier
+						const targetDy = currentDy * speedMultiplier
 
-						const x = shape.x + Math.sign(targetDx)*Math.min(config.maxBoostSpeed,Math.abs(targetDx))
-						const y = shape.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
+						const x = shape.x + targetDx
+						const y = shape.y + targetDy
 
 						//set values with a final check to keep the shape within bounds
-						shape.x = Math.min(Math.max(x,(-tl[0] * targetScale)),app.renderer.width - (br[0] * targetScale))
-						shape.y = Math.min(Math.max(y,(-tl[1] * targetScale)),app.renderer.height - (br[1] * targetScale))
-						shape.scale.set(targetScale)
+						shape.x = Math.min(Math.max(x,(-tl[0] * nextScale)),app.renderer.width - (br[0] * nextScale))
+						shape.y = Math.min(Math.max(y,(-tl[1] * nextScale)),app.renderer.height - (br[1] * nextScale))
+						shape.scale.set(nextScale)
 					})
 				})
-				const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v,1))}
+				const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v*config.audioSensitivity,1))}
 				window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(wallpaperAudioListener)
 			})
 		}
-
 		runApplication()
 	</script>
 </body>
