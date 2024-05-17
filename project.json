@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "A collection of small dots which move and expand to the beat of your music. You can adjust the colours, speed, and size.\n\nVery similar to another wallpaper for WallpaperEngine, but I recoded it from scratch to make it slightly more efficient (although it doesn't have all of the same features, just the ones which I use personally)\n\nhttps://github.com/Namyts/dots-wallpaper-engine.git\n\nUpdated - CPU usage reduced even further. Some computation moved to GPU.",
+	"description" : "A collection of small dots which move and expand to the beat of your music. You can adjust the colours, speed, and size.\n\nVery similar to another wallpaper for WallpaperEngine, but I recoded it from scratch to make it slightly more efficient (although it doesn't have all of the same features, just the ones which I use personally)\n\nhttps://github.com/Namyts/dots-wallpaper-engine.git\n\nUpdated - CPU usage reduced even further. Some computation moved to GPU. There are also alternative modes for drawing moving squares, and a boring mode for a moving dvd logos",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -39,36 +39,53 @@
 				"type" : "slider",
 				"value" : 24
 			},
-			"circleMax" : 
+			"colourchangeonwallhit" : 
+			{
+				"condition" : "",
+				"index" : 17,
+				"order" : 118,
+				"text" : "colourChangeOnWallHit",
+				"type" : "bool",
+				"value" : true
+			},
+			"shape" : 
+			{
+				"index" : 18,
+				"order" : 119,
+				"text" : "Shape (circle, dvd, square)",
+				"type" : "textinput",
+				"value" : "circle"
+			},
+			"shapeScaleMax" : 
 			{
 				"fraction" : false,
 				"index" : 3,
-				"max" : 150,
+				"max" : 25,
 				"min" : 1,
 				"order" : 103,
-				"text" : "circleMax",
+				"text" : "shapeScaleMax",
 				"type" : "slider",
-				"value" : 35
+				"value" : 9
 			},
-			"circleMin" : 
+			"shapeScaleMin" : 
 			{
 				"fraction" : false,
 				"index" : 2,
-				"max" : 150,
+				"max" : 25,
 				"min" : 1,
 				"order" : 102,
-				"text" : "circleMin",
+				"text" : "shapeScaleMin",
 				"type" : "slider",
-				"value" : 5
+				"value" : 1
 			},
-			"circlesPer100px" : 
+			"shapesPer100px" : 
 			{
 				"fraction" : false,
 				"index" : 4,
 				"max" : 10,
 				"min" : 0,
 				"order" : 104,
-				"text" : "circlesPer100px",
+				"text" : "shapesPer100px",
 				"type" : "slider",
 				"value" : 4
 			},
@@ -153,6 +170,17 @@
 				"type" : "slider",
 				"value" : 0.75
 			},
+			"maxTotalShapes" : 
+			{
+				"fraction" : false,
+				"index" : 2,
+				"max" : 10000,
+				"min" : 1,
+				"order" : 117,
+				"text" : "maxTotalShapes",
+				"type" : "slider",
+				"value" : 10000
+			},
 			"minB" : 
 			{
 				"fraction" : false,
@@ -217,7 +245,7 @@
 	"tags" : [ "Music" ],
 	"title" : "Musical Dots",
 	"type" : "web",
-	"version" : 3,
+	"version" : 4,
 	"visibility" : "public",
 	"workshopid" : "2977794493",
 	"workshopurl" : "steam://url/CommunityFilePage/2977794493"

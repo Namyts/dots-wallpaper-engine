@@ -16,7 +16,7 @@
 		let config = {
 			antialias: true,
 			fps: 120,
-			background: '#000000',
+			schemecolor: '0 0 0',
 			shape: 'circle',
 			minSpeed: 0.25,
 			maxSpeed: 0.75,
@@ -75,7 +75,8 @@
 			shape.tint = `rgb(${r},${g},${b})`
 		}
 
-		const drawShapeAndGetSize = (shapeType, initialScale) => {
+		const drawShapeAndGetSize = (shapeType) => {
+			const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
 			const g = new PIXI.Graphics()
 			switch(shapeType){
 				case "dvd": { return [ g.svg(window.dvd), 500, 300 ] }
@@ -93,44 +94,39 @@
 		const runApplication = () => {
 			let wallsHit = 0
 			let cornersHit = 0
-			const audioChannels = 128
-			app = new PIXI.Application();
-			app.init({ resizeTo: window, antialias: config.antialias, background: config.background })
+			let audio = new Array(128).fill(0)
+			app = new PIXI.Application()
+			app.init({ resizeTo: window, antialias: config.antialias, background: `rgb(${config.schemecolor.split(" ").join(",")})` })
 			.then(()=>{
 				document.getElementById("app").appendChild(app.canvas)
 				const shapes = []
 				const numberOfShapes = Math.min(config.maxTotalShapes, Math.floor(config.shapesPer100px*(app.renderer.width*app.renderer.height)/10000))
 
 				for (let i = 0; i < numberOfShapes; i++) {
-					const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
 					const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
 					const initialAngle = randomBetween(0,2*Math.PI)
 					const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
 					
-					let [shape, width, height] = drawShapeAndGetSize(config.shape, initialScale)
+					let [shape, width, height] = drawShapeAndGetSize(config.shape)
 
 					shape.fill({color: "white", alpha: 0.75})
 					chooseRandomColour(shape)
-					shape.x = randomIntBetween(0,app.renderer.width - (width * initialScale))
-					shape.y = randomIntBetween(0,app.renderer.height - (height * initialScale))
+					shape.x = randomIntBetween(0,app.renderer.width - width)
+					shape.y = randomIntBetween(0,app.renderer.height - height)
 
-					shapes.push({ shape, velocity, initialScale, initialSpeed, width, height })
+					shapes.push({ shape, velocity, width, height })
 					app.stage.addChild(shape);
 				}
-
-				let audio = new Array(audioChannels).fill(0)
-
 				app.ticker.maxFPS = config.fps
-
 				app.ticker.add((ticker) => {
 					const delta = ticker.deltaTime
-
 					const audioSpeedBoost = Math.max(1,(audio.slice(1,config.audioSpeedBoostWidth).reduce((t,a)=>t+a,0)/config.audioSpeedBoostWidth)*config.audioSpeedBoost)
-					shapes.forEach(({ shape, velocity, initialScale, initialSpeed, width, height }, index) => {
+
+					shapes.forEach(({ shape, velocity, width, height }, index) => {
 						//size changes
-						const audioSizeBoost = Math.max(1,audio[index%audioChannels]*config.audioSizeBoost)
+						const audioSizeBoost = Math.max(1,audio[index%audio.length]*config.audioSizeBoost)
 						const currentScale = shape.scale.x
-						const targetScale = Math.min(config.maxBoostScale/initialScale, currentScale + (audioSizeBoost-currentScale)*config.equalise)
+						const targetScale = Math.min(config.maxBoostScale, currentScale + (audioSizeBoost-currentScale)*config.equalise)
 
 						let bounces = 0
 						//position changes
@@ -153,7 +149,6 @@
 								console.log(cornersHit)
 							}
 						}
-
 
 						const currentDx = dx * delta
 						const currentDy = dy * delta
