@@ -57,6 +57,18 @@
 			}
 		}
 
+		const randomIntBetween = (a,b) => Math.ceil(randomBetween(a,b))
+		const randomBetween = (a,b) => a + Math.random()*(b-a)
+
+		const chooseRandomColour = circle => {
+			const [r,g,b] = [
+				randomIntBetween(config.minR,config.maxR),
+				randomIntBetween(config.minG,config.maxG),
+				randomIntBetween(config.minB,config.maxB)
+			]
+			circle.tint = `rgb(${r},${g},${b})`
+		}
+
 		const runApplication = () => {
 			let wallsHit = 0
 			let cornersHit = 0
@@ -67,9 +79,6 @@
 				document.getElementById("app").appendChild(app.canvas)
 				const circles = []
 				const numberOfCircles = Math.floor(config.numberOfCircles)
-
-				const randomIntBetween = (a,b) => Math.ceil(randomBetween(a,b))
-				const randomBetween = (a,b) => a + Math.random()*(b-a)
 
 				for (let i = 0; i < numberOfCircles; i++) {
 					const initialSpeed = randomBetween(config.minSpeed,config.maxSpeed)
@@ -87,12 +96,7 @@
 				circles.forEach(({ circle }) => {
 					circle.x = randomIntBetween(0,app.renderer.width - circle.width)
 					circle.y = randomIntBetween(0,app.renderer.height - circle.height)
-					const [r,g,b] = [
-						randomIntBetween(config.minR,config.maxR),
-						randomIntBetween(config.minG,config.maxG),
-						randomIntBetween(config.minB,config.maxB)
-					]
-					circle.tint = `rgb(${r},${g},${b})`
+					chooseRandomColour(circle)
 				})
 
 				let audio = new Array(audioChannels).fill(0)
@@ -122,6 +126,7 @@
 							wallsHit += 1
 							bounces += 1
 						}
+						if(bounces > 0){ chooseRandomColour(circle) }
 						wallsHit += bounces
 						if(bounces === 2){cornersHit += 1}
 
