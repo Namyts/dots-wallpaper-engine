@@ -12,10 +12,10 @@
 				"index" : 11,
 				"max" : 20,
 				"min" : 0,
-				"order" : 111,
+				"order" : 113,
 				"text" : "audioSizeBoost",
 				"type" : "slider",
-				"value" : 4
+				"value" : 15
 			},
 			"audioSpeedBoost" : 
 			{
@@ -23,7 +23,7 @@
 				"index" : 12,
 				"max" : 1000,
 				"min" : 0,
-				"order" : 112,
+				"order" : 114,
 				"text" : "audioSpeedBoost",
 				"type" : "slider",
 				"value" : 100
@@ -34,7 +34,7 @@
 				"index" : 13,
 				"max" : 128,
 				"min" : 1,
-				"order" : 113,
+				"order" : 115,
 				"text" : "audioSpeedBoostWidth",
 				"type" : "slider",
 				"value" : 24
@@ -43,7 +43,7 @@
 			{
 				"condition" : "",
 				"index" : 17,
-				"order" : 118,
+				"order" : 112,
 				"text" : "colourChangeOnWallHit",
 				"type" : "bool",
 				"value" : true
@@ -51,7 +51,7 @@
 			"shape" : 
 			{
 				"index" : 18,
-				"order" : 119,
+				"order" : 100,
 				"text" : "Shape (circle, dvd, square)",
 				"type" : "textinput",
 				"value" : "circle"
@@ -95,7 +95,7 @@
 				"index" : 16,
 				"max" : 1,
 				"min" : 0,
-				"order" : 116,
+				"order" : 118,
 				"precision" : 3,
 				"step" : 0.01,
 				"text" : "equalise",
@@ -108,19 +108,19 @@
 				"index" : 10,
 				"max" : 255,
 				"min" : 0,
-				"order" : 110,
+				"order" : 111,
 				"text" : "maxB",
 				"type" : "slider",
 				"value" : 255
 			},
-			"maxBoostSize" : 
+			"maxBoostScale" : 
 			{
 				"fraction" : false,
 				"index" : 14,
 				"max" : 250,
 				"min" : 1,
-				"order" : 114,
-				"text" : "maxBoostSize",
+				"order" : 116,
+				"text" : "maxBoostScale",
 				"type" : "slider",
 				"value" : 50
 			},
@@ -130,7 +130,7 @@
 				"index" : 15,
 				"max" : 1000,
 				"min" : 0,
-				"order" : 115,
+				"order" : 117,
 				"text" : "maxBoostSpeed",
 				"type" : "slider",
 				"value" : 100
@@ -141,7 +141,7 @@
 				"index" : 8,
 				"max" : 255,
 				"min" : 0,
-				"order" : 108,
+				"order" : 109,
 				"text" : "maxG",
 				"type" : "slider",
 				"value" : 255
@@ -152,7 +152,7 @@
 				"index" : 6,
 				"max" : 255,
 				"min" : 0,
-				"order" : 106,
+				"order" : 107,
 				"text" : "maxR",
 				"type" : "slider",
 				"value" : 255
@@ -163,7 +163,7 @@
 				"index" : 1,
 				"max" : 10,
 				"min" : 0,
-				"order" : 101,
+				"order" : 102,
 				"precision" : 3,
 				"step" : 0.01,
 				"text" : "maxSpeed",
@@ -176,7 +176,7 @@
 				"index" : 2,
 				"max" : 10000,
 				"min" : 1,
-				"order" : 117,
+				"order" : 105,
 				"text" : "maxTotalShapes",
 				"type" : "slider",
 				"value" : 10000
@@ -187,7 +187,7 @@
 				"index" : 9,
 				"max" : 255,
 				"min" : 0,
-				"order" : 109,
+				"order" : 110,
 				"text" : "minB",
 				"type" : "slider",
 				"value" : 0
@@ -198,7 +198,7 @@
 				"index" : 7,
 				"max" : 255,
 				"min" : 0,
-				"order" : 107,
+				"order" : 108,
 				"text" : "minG",
 				"type" : "slider",
 				"value" : 0
@@ -209,7 +209,7 @@
 				"index" : 5,
 				"max" : 255,
 				"min" : 0,
-				"order" : 105,
+				"order" : 106,
 				"text" : "minR",
 				"type" : "slider",
 				"value" : 0
@@ -220,7 +220,7 @@
 				"index" : 0,
 				"max" : 10,
 				"min" : 0,
-				"order" : 100,
+				"order" : 101,
 				"precision" : 3,
 				"step" : 0.01,
 				"text" : "minSpeed",
