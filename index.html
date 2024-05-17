@@ -75,20 +75,21 @@
 			shape.tint = `rgb(${r},${g},${b})`
 		}
 
-		const drawShapeAndGetSize = (shapeType) => {
+		const drawShapeAndGetBoundary = (shapeType) => {
 			const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
 			const g = new PIXI.Graphics()
 			switch(shapeType){
-				case "dvd": { return [ g.svg(window.dvd), 500, 300 ] }
+				case "dvd": { return [ g.svg(window.dvd), [0,0], [500,300] ] }
 				case "square": {
-					const s = 4*initialScale
-					return [ g.rect(0,0,s,s), s, s ]
+					const s = 8*initialScale
+					return [ g.rect(-s/2,-s/2,s,s), [-s/2,-s/2], [s/2,s/2] ]
 				}
 				default: { 
 					const r = 4*initialScale
-					return [ g.circle(r, r, r), 2*r, 2*r ]
+					return [ g.circle(0, 0, r), [-r,-r], [r,r] ]
 				}
 			}
+			// returns the shape, and the top-left, and bottom-right co-ordinates for collisions
 		}
 
 		const runApplication = () => {
@@ -107,14 +108,14 @@
 					const initialAngle = randomBetween(0,2*Math.PI)
 					const velocity = [Math.cos(initialAngle) * initialSpeed, Math.sin(initialAngle) * initialSpeed]
 					
-					let [shape, width, height] = drawShapeAndGetSize(config.shape)
+					let [shape, tl, br] = drawShapeAndGetBoundary(config.shape)
 
 					shape.fill({color: "white", alpha: 0.75})
 					chooseRandomColour(shape)
-					shape.x = randomIntBetween(0,app.renderer.width - width)
-					shape.y = randomIntBetween(0,app.renderer.height - height)
+					shape.x = randomIntBetween(-tl[0], app.renderer.width - br[0])
+					shape.y = randomIntBetween(-tl[1], app.renderer.height - br[1])
 
-					shapes.push({ shape, velocity, width, height })
+					shapes.push({ shape, velocity, tl, br })
 					app.stage.addChild(shape);
 				}
 				app.ticker.maxFPS = config.fps
@@ -122,7 +123,7 @@
 					const delta = ticker.deltaTime
 					const audioSpeedBoost = Math.max(1,(audio.slice(1,config.audioSpeedBoostWidth).reduce((t,a)=>t+a,0)/config.audioSpeedBoostWidth)*config.audioSpeedBoost)
 
-					shapes.forEach(({ shape, velocity, width, height }, index) => {
+					shapes.forEach(({ shape, velocity, tl, br }, index) => {
 						//size changes
 						const audioSizeBoost = Math.max(1,audio[index%audio.length]*config.audioSizeBoost)
 						const currentScale = shape.scale.x
@@ -131,12 +132,12 @@
 						let bounces = 0
 						//position changes
 						let [dx, dy] = velocity
-						if (shape.x >= app.renderer.width - (width * targetScale) || shape.x <= 0) {
+						if (shape.x + (br[0] * targetScale) >= app.renderer.width || shape.x + (tl[0] * targetScale) <= 0) {
 							bounces += 1
 							dx = dx * -1
 							shapes[index].velocity[0] = dx
 						}
-						if (shape.y >= app.renderer.height - (height * targetScale) || shape.y <= 0) {
+						if (shape.y + (br[1] * targetScale) >= app.renderer.height || shape.y + (tl[1] * targetScale) <= 0) {
 							bounces += 1
 							dy = dy * -1
 							shapes[index].velocity[1] = dy
@@ -159,8 +160,8 @@
 						const y = shape.y + Math.sign(targetDy)*Math.min(config.maxBoostSpeed,Math.abs(targetDy))
 
 						//set values with a final check to keep the shape within bounds
-						shape.x = Math.min(Math.max(x,0),app.renderer.width - (width * targetScale))
-						shape.y = Math.min(Math.max(y,0),app.renderer.height - (height * targetScale))
+						shape.x = Math.min(Math.max(x,(-tl[0] * targetScale)),app.renderer.width - (br[0] * targetScale))
+						shape.y = Math.min(Math.max(y,(-tl[1] * targetScale)),app.renderer.height - (br[1] * targetScale))
 						shape.scale.set(targetScale)
 					})
 				})
