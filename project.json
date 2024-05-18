@@ -10,14 +10,14 @@
 			{
 				"fraction" : true,
 				"index" : 11,
-				"max" : 10,
+				"max" : 25,
 				"min" : 1,
 				"order" : 113,
 				"precision" : 3,
 				"step" : 0.1,
 				"text" : "audioSensitivity",
 				"type" : "slider",
-				"value" : 1
+				"value" : 10
 			},
 			"averagedAudioChannelWidth" : 
 			{
@@ -28,7 +28,7 @@
 				"order" : 115,
 				"text" : "averagedAudioChannelWidth",
 				"type" : "slider",
-				"value" : 24
+				"value" : 12
 			},
 			"colourChangeOnWallHit" : 
 			{
