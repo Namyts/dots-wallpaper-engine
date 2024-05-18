@@ -19,17 +19,6 @@
 				"type" : "slider",
 				"value" : 1
 			},
-			"audioSpeedBoost" : 
-			{
-				"fraction" : false,
-				"index" : 12,
-				"max" : 1000,
-				"min" : 0,
-				"order" : 114,
-				"text" : "audioSpeedBoost",
-				"type" : "slider",
-				"value" : 600
-			},
 			"averagedAudioChannelWidth" : 
 			{
 				"fraction" : false,
@@ -41,7 +30,7 @@
 				"type" : "slider",
 				"value" : 24
 			},
-			"colourchangeonwallhit" : 
+			"colourChangeOnWallHit" : 
 			{
 				"condition" : "",
 				"index" : 17,
@@ -119,12 +108,12 @@
 			{
 				"fraction" : false,
 				"index" : 14,
-				"max" : 50,
+				"max" : 25,
 				"min" : 1,
 				"order" : 116,
 				"text" : "maxBoostScale",
 				"type" : "slider",
-				"value" : 14
+				"value" : 15
 			},
 			"maxBoostSpeed" : 
 			{
@@ -163,7 +152,7 @@
 			{
 				"fraction" : true,
 				"index" : 1,
-				"max" : 10,
+				"max" : 20,
 				"min" : 0,
 				"order" : 102,
 				"precision" : 3,
@@ -181,7 +170,7 @@
 				"order" : 105,
 				"text" : "maxTotalShapes",
 				"type" : "slider",
-				"value" : 10000
+				"value" : 50000
 			},
 			"minB" : 
 			{
@@ -220,7 +209,7 @@
 			{
 				"fraction" : true,
 				"index" : 0,
-				"max" : 10,
+				"max" : 20,
 				"min" : 0,
 				"order" : 101,
 				"precision" : 3,
