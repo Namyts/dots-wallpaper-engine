@@ -41,8 +41,12 @@
 		let app = null
 		const restartApplication = () => {
 			if(app){
-				app.destroy(true,true)
-				app = null
+				try {
+					app.destroy(true,true)
+					app = null
+				} catch (e) {
+					location.reload()
+				}
 				runApplication()
 			} else {
 				runApplication()
@@ -78,7 +82,7 @@
 		const drawShapeAndGetBoundary = (shapeType, scale) => {
 			// returns the shape, and the top-left, and bottom-right co-ordinates for collisions
 			const g = new PIXI.Graphics()
-			switch(shapeType){
+			switch(shapeType){	
 				case "dvd": { return [ g.svg(window.dvd), [0,0], [500,300] ] }
 				case "square": {
 					const s = 4*scale
@@ -163,7 +167,7 @@
 						//set values with a final check to keep the shape within bounds
 						shape.x = Math.min(Math.max(x,(-tl[0] * nextScale)),app.renderer.width - (br[0] * nextScale))
 						shape.y = Math.min(Math.max(y,(-tl[1] * nextScale)),app.renderer.height - (br[1] * nextScale))
-						shape.scale.set(nextScale)
+						config.shape !== 'dvd' && shape.scale.set(nextScale)
 					})
 				})
 				const wallpaperAudioListener = a => {audio = a.map(v=>Math.min(v*config.audioSensitivity,1))}
