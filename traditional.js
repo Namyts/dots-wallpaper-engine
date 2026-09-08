@@ -1,13 +1,12 @@
-window.createTraditionalMode = ({
-	app,
-	config,
-	getAudio,
+import {
 	percentBetween,
 	lerp,
 	randomBetween,
 	randomIntBetween,
 	chooseRandomColour
-}) => {
+} from './helpers.js'
+
+export const createTraditionalMode = ({ app, config, getAudio }) => {
 	let wallsHit = 0
 	let cornersHit = 0
 	let audio = []
@@ -55,7 +54,7 @@ window.createTraditionalMode = ({
 			}
 			if (bounces > 0) {
 				wallsHit += bounces
-				config.colourChangeOnWallHit && chooseRandomColour(shape)
+				config.colourChangeOnWallHit && chooseRandomColour(shape, config)
 				if (bounces === 2) {
 					cornersHit += 1
 					console.log(cornersHit)
