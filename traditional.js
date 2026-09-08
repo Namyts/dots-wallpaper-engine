@@ -62,9 +62,14 @@ window.createTraditionalMode = ({
 				}
 			}
 
+			const currentDx = dx * delta
+			const currentDy = dy * delta
 			const speedMultiplier = percentBetween(initialSpeed, config.maxBoostSpeed, averagedAudioMultiplier)
-			const x = shape.x + dx * delta * speedMultiplier
-			const y = shape.y + dy * delta * speedMultiplier
+			const targetDx = currentDx * speedMultiplier
+			const targetDy = currentDy * speedMultiplier
+
+			const x = shape.x + targetDx
+			const y = shape.y + targetDy
 
 			shape.x = Math.min(Math.max(x,(-tl[0] * nextScale)),app.renderer.width - (br[0] * nextScale))
 			shape.y = Math.min(Math.max(y,(-tl[1] * nextScale)),app.renderer.height - (br[1] * nextScale))
