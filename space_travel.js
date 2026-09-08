@@ -1,6 +1,6 @@
-import { randomBetween } from './helpers.js'
+window.createSpaceTravelMode = ({ app }) => {
+	const { randomBetween } = window.helpers
 
-export const createSpaceTravelMode = ({ app }) => {
 	const farDepth = 1
 	const cameraSpeed = 0.001
 

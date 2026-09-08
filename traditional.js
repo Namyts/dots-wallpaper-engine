@@ -1,12 +1,12 @@
-import {
-	percentBetween,
-	lerp,
-	randomBetween,
-	randomIntBetween,
-	chooseRandomColour
-} from './helpers.js'
+window.createTraditionalMode = ({ app, config, getAudio }) => {
+	const {
+		percentBetween,
+		lerp,
+		randomBetween,
+		randomIntBetween,
+		chooseRandomColour
+	} = window.helpers
 
-export const createTraditionalMode = ({ app, config, getAudio }) => {
 	let wallsHit = 0
 	let cornersHit = 0
 	let audio = []
