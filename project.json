@@ -6,6 +6,25 @@
 	{
 		"properties" : 
 		{
+			"mode" :
+			{
+				"index" : 19,
+				"options" :
+				[
+					{
+						"label" : "Traditional",
+						"value" : "traditional"
+					},
+					{
+						"label" : "Space travel",
+						"value" : "space_travel"
+					}
+				],
+				"order" : 1,
+				"text" : "Animation mode",
+				"type" : "combo",
+				"value" : "traditional"
+			},
 			"audioSensitivity" : 
 			{
 				"fraction" : true,
