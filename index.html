@@ -85,9 +85,15 @@
 				document.getElementById("app").appendChild(app.canvas)
 				const shapes = []
 				const numberOfShapes = Math.min(config.maxTotalShapes, Math.floor(config.shapesPer100px*(app.renderer.width*app.renderer.height)/10000))
-				const mode = config.mode === 'space_travel'
-					? window.createSpaceTravelMode({ app })
-					: window.createTraditionalMode({ app, config, getAudio: () => audio })
+				let mode
+				switch (config.mode) {
+					case 'space_travel':
+						mode = window.createSpaceTravelMode({ app })
+						break
+					case 'traditional':
+					default:
+						mode = window.createTraditionalMode({ app, config, getAudio: () => audio })
+				}
 
 				for (let i = 0; i < numberOfShapes; i++) {
 					const initialScale = randomBetween(config.shapeScaleMin,config.shapeScaleMax)
