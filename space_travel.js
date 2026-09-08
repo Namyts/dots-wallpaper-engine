@@ -1,8 +1,10 @@
-window.createSpaceTravelMode = ({ app }) => {
-	const { randomBetween } = window.helpers
+window.createSpaceTravelMode = ({ app, config, getAudio }) => {
+	const { percentBetween, lerp, randomBetween } = window.helpers
 
 	const farDepth = 1
 	const cameraSpeed = 0.001
+	let audio = []
+	let averagedAudioMultiplier = 0
 
 	const respawnShape = (item, depth = farDepth) => {
 		item.depth = depth
@@ -13,15 +15,27 @@ window.createSpaceTravelMode = ({ app }) => {
 	return {
 		initialiseShape: item => {
 			respawnShape(item, randomBetween(0.1,farDepth))
+			item.audioScale = 1
 		},
 
 		updateShape: (item, index, delta) => {
-			item.depth -= cameraSpeed * delta
+			if (index === 0) {
+				audio = getAudio()
+				averagedAudioMultiplier = audio
+					.slice(1,config.averagedAudioChannelWidth)
+					.reduce((total,value)=>total+value,0) / config.averagedAudioChannelWidth
+			}
+
+			const speedMultiplier = lerp(1, config.maxBoostSpeed, averagedAudioMultiplier)
+			item.depth -= cameraSpeed * speedMultiplier * delta
 
 			const perspective = 1 / item.depth
 			const x = app.renderer.width / 2 + item.worldX * perspective
 			const y = app.renderer.height / 2 + item.worldY * perspective
-			item.shape.scale.set(0.1 * perspective)
+			const audioMultiplier = audio[index%audio.length]
+			const targetScale = percentBetween(item.initialScale, config.maxBoostScale, audioMultiplier)
+			item.audioScale = lerp(item.audioScale, targetScale, config.equalise)
+			item.shape.scale.set(0.1 * perspective * item.audioScale)
 			const radius = Math.max(item.shape.width, item.shape.height) / 2
 
 			if (item.depth <= 0.01 ||
