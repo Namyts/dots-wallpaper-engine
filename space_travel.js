@@ -4,7 +4,6 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 	const farDepth = 1
 	const cameraSpeedScale = 0.004
 	const perspectiveScale = 0.1
-	const cameraLookStrength = 0 // 0.1 is good
 	let audio = []
 	let averagedAudioMultiplier = 0
 	let cameraX = 0
@@ -40,8 +39,8 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 					.slice(1,config.averagedAudioChannelWidth)
 					.reduce((total,value)=>total+value,0) / config.averagedAudioChannelWidth
 
-				const targetCameraX = (window._mouse.x / app.renderer.width - 0.5) * app.renderer.width * cameraLookStrength
-				const targetCameraY = (window._mouse.y / app.renderer.height - 0.5) * app.renderer.height * cameraLookStrength
+				const targetCameraX = (window._mouse.x / app.renderer.width - 0.5) * app.renderer.width * config.cameraLookStrength
+				const targetCameraY = (window._mouse.y / app.renderer.height - 0.5) * app.renderer.height * config.cameraLookStrength
 				cameraX = lerp(cameraX, targetCameraX, Math.min(1, 0.08 * delta))
 				cameraY = lerp(cameraY, targetCameraY, Math.min(1, 0.08 * delta))
 			}
