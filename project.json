@@ -74,9 +74,24 @@
 			"shape" : 
 			{
 				"index" : 18,
+				"options" :
+				[
+					{
+						"label" : "Circle",
+						"value" : "circle"
+					},
+					{
+						"label" : "Square",
+						"value" : "square"
+					},
+					{
+						"label" : "DVD",
+						"value" : "dvd"
+					}
+				],
 				"order" : 100,
-				"text" : "Shape (circle, dvd, square)",
-				"type" : "textinput",
+				"text" : "Shape",
+				"type" : "combo",
 				"value" : "circle"
 			},
 			"shapeScaleMax" : 
