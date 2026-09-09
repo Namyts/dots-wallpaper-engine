@@ -7,10 +7,13 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 	let audio = []
 	let averagedAudioMultiplier = 0
 
+	app.stage.sortableChildren = true
+
 	const respawnShape = (item, depth = farDepth) => {
 		item.depth = depth
 		item.worldX = randomBetween(-app.renderer.width / 2, app.renderer.width / 2) * depth
 		item.worldY = randomBetween(-app.renderer.height / 2, app.renderer.height / 2) * depth
+		item.shape.zIndex = -item.depth
 	}
 
 	return {
@@ -50,6 +53,7 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 
 			item.shape.x = x
 			item.shape.y = y
+			item.shape.zIndex = -item.depth
 			item.shape.alpha = Math.min(1, (farDepth - item.depth) / 0.2)
 		}
 	}
