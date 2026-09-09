@@ -5,7 +5,7 @@
 	<script src="https://pixijs.download/v8.1.2/pixi.min.js"></script>
 	<script src="./pixi.min.js"></script>
 	<script src="./helpers.js"></script>
-	<script src="./traditional.js"></script>
+	<script src="./bouncing.js"></script>
 	<script src="./space_travel.js"></script>
 	<script>
 		window.dvd = `
@@ -90,9 +90,9 @@
 					case 'space_travel':
 						mode = window.createSpaceTravelMode({ app, config, getAudio: () => audio })
 						break
-					case 'traditional':
+					case 'bouncing':
 					default:
-						mode = window.createTraditionalMode({ app, config, getAudio: () => audio })
+						mode = window.createBouncingMode({ app, config, getAudio: () => audio })
 				}
 
 				for (let i = 0; i < numberOfShapes; i++) {

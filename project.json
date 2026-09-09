@@ -12,8 +12,8 @@
 				"options" :
 				[
 					{
-						"label" : "Traditional",
-						"value" : "traditional"
+						"label" : "Bouncing",
+						"value" : "bouncing"
 					},
 					{
 						"label" : "Space travel",
@@ -23,7 +23,7 @@
 				"order" : 1,
 				"text" : "Animation mode",
 				"type" : "combo",
-				"value" : "traditional"
+				"value" : "bouncing"
 			},
 			"audioSensitivity" : 
 			{

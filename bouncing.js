@@ -1,4 +1,4 @@
-window.createTraditionalMode = ({ app, config, getAudio }) => {
+window.createBouncingMode = ({ app, config, getAudio }) => {
 	const {
 		percentBetween,
 		lerp,
