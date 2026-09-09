@@ -35,12 +35,13 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 			const audioMultiplier = audio[index%audio.length]
 			const targetScale = percentBetween(item.initialScale, config.maxBoostScale, audioMultiplier)
 			item.audioScale = lerp(item.audioScale, targetScale, config.equalise)
-			item.shape.scale.set(0.1 * perspective * item.audioScale)
-			const radius = Math.max(item.shape.width, item.shape.height) / 2
+			const nextScale = 0.1 * perspective * item.audioScale
+			item.shape.scale.set(nextScale)
+			const { tl, br } = item
 
 			if (item.depth <= 0.01 ||
-				x + radius < 0 || x - radius > app.renderer.width ||
-				y + radius < 0 || y - radius > app.renderer.height) {
+				x + (br[0] * nextScale) < 0 || x + (tl[0] * nextScale) > app.renderer.width ||
+				y + (br[1] * nextScale) < 0 || y + (tl[1] * nextScale) > app.renderer.height) {
 				respawnShape(item)
 				item.shape.alpha = 0
 				return
