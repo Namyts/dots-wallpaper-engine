@@ -2,7 +2,6 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 	const { percentBetween, lerp, randomBetween } = window.helpers
 
 	const farDepth = 1
-	const cameraSpeed = 0.001
 	let audio = []
 	let averagedAudioMultiplier = 0
 
@@ -26,8 +25,8 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 					.reduce((total,value)=>total+value,0) / config.averagedAudioChannelWidth
 			}
 
-			const speedMultiplier = lerp(1, config.maxBoostSpeed, averagedAudioMultiplier)
-			item.depth -= cameraSpeed * speedMultiplier * delta
+			const cameraSpeed = lerp(config.minSpeed, config.maxSpeed, averagedAudioMultiplier) * 0.004
+			item.depth -= cameraSpeed * delta
 
 			const perspective = 1 / item.depth
 			const x = app.renderer.width / 2 + item.worldX * perspective
