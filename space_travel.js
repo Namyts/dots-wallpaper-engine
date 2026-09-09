@@ -2,6 +2,8 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 	const { percentBetween, lerp, randomBetween } = window.helpers
 
 	const farDepth = 1
+	const cameraSpeedScale = 0.004
+	const perspectiveScale = 0.1
 	let audio = []
 	let averagedAudioMultiplier = 0
 
@@ -25,7 +27,7 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 					.reduce((total,value)=>total+value,0) / config.averagedAudioChannelWidth
 			}
 
-			const cameraSpeed = lerp(config.minSpeed, config.maxSpeed, averagedAudioMultiplier) * 0.004
+			const cameraSpeed = lerp(config.minSpeed, config.maxSpeed, averagedAudioMultiplier) * cameraSpeedScale
 			item.depth -= cameraSpeed * delta
 
 			const perspective = 1 / item.depth
@@ -34,7 +36,7 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 			const audioMultiplier = audio[index%audio.length]
 			const targetScale = percentBetween(item.initialScale, config.maxBoostScale, audioMultiplier)
 			item.audioScale = lerp(item.audioScale, targetScale, config.equalise)
-			const nextScale = 0.1 * perspective * item.audioScale
+			const nextScale = perspectiveScale * perspective * item.audioScale
 			item.shape.scale.set(nextScale)
 			const { tl, br } = item
 
