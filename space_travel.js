@@ -8,6 +8,7 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 	let averagedAudioMultiplier = 0
 	let cameraX = 0
 	let cameraY = 0
+	let cameraSpeed = config.minSpeed
 
 	app.stage.sortableChildren = true
 
@@ -43,10 +44,12 @@ window.createSpaceTravelMode = ({ app, config, getAudio }) => {
 				const targetCameraY = (window._mouse.y / app.renderer.height - 0.5) * app.renderer.height * config.cameraLookStrength
 				cameraX = lerp(cameraX, targetCameraX, Math.min(1, 0.08 * delta))
 				cameraY = lerp(cameraY, targetCameraY, Math.min(1, 0.08 * delta))
+
+				const targetCameraSpeed = percentBetween(config.minSpeed, config.maxBoostSpeed, averagedAudioMultiplier) * config.minSpeed
+				cameraSpeed = lerp(cameraSpeed, targetCameraSpeed, config.equalise)
 			}
 
-			const cameraSpeed = lerp(config.minSpeed, config.maxSpeed, averagedAudioMultiplier) * cameraSpeedScale
-			item.depth -= cameraSpeed * delta
+			item.depth -= cameraSpeed * cameraSpeedScale * delta
 
 			const perspective = 1 / item.depth
 			const x = app.renderer.width / 2 + (item.worldX - cameraX) * perspective
